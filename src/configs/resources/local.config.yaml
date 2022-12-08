@@ -1,0 +1,39 @@
+http: 
+  port: 3000
+  
+database:
+  mongodb:
+    host: localhost
+    port: 27017
+    userName: root
+    password: toor
+    database: test
+  postgres:
+    host: localhost
+    port: 5432
+    username: postgres
+    password: postgres
+    database: test
+
+mailer:
+  service: Gmail
+  host: smtp.gmail.com
+  port: 465
+  auth:
+    user: notifications.dopetech@gmail.com
+    pass: helishchy9591
+  domainName:
+
+jwt:
+  accessTokenExpiresIn: 1h
+  refreshTokenExpiresIn: 2h
+  accessTokenSecret: goUomoyFG1Jb2cfbear9Ml9MI9EvXqme
+  refreshTokenSecret: xXLBHiQZBZp7JtWg3k5GQhnzFF40qky9
+
+oauth:
+  google:
+    clientId: 927949735021-op33jcgrhh6jel07fvdr88tra59efh3r.apps.googleusercontent.com
+    clientSecret: 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
+  facebook:
+    appId: 502459464655499
+    appSecret: c75842421c384189f840011a78517513
