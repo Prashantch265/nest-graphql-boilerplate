@@ -2,7 +2,7 @@
  * @Author: prashant.chaudhary
  * @Date: 2022-12-08 10:24:32
  * @Last Modified by: prashant.chaudhary
- * @Last Modified time: 2022-12-08 15:12:15
+ * @Last Modified time: 2022-12-09 14:36:31
  */
 
 import { MikroOrmModuleSyncOptions } from '@mikro-orm/nestjs';
@@ -14,6 +14,7 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
 import readConfigurations from './read-configs';
 import { TSMigrationGenerator } from '@mikro-orm/migrations';
 import { Utils } from '@mikro-orm/core';
+import MikroEntitySubscriber from 'src/database/subscribers/mikro-entity.subscriber';
 
 const NODE_ENV = process.env.NODE_ENV;
 
@@ -54,7 +55,9 @@ const pgConnectionForTypeOrm = (): PostgresConnectionOptions => {
     logger: 'debug',
     entities: [`${__dirname}/../core/**/*.entity.{ts,js}`],
     migrations: [`${__dirname}/../database/migrations/*.{ts,js}`],
-    subscribers: [`${__dirname}/../database/subscriber/*.{ts,js}`],
+    subscribers: [
+      `${__dirname}/../database/subscribers/typeorm-entity.subscriber.{ts,js}`,
+    ],
   };
 };
 
@@ -70,7 +73,7 @@ const pgConnectionForMikroOrm = (): MikroOrmModuleSyncOptions => {
     dbName: postgresConfig.database,
     // entities: ['./dist/core/**/*.entity.js'],
     entitiesTs: ['./src/core/**/*.entity.ts'],
-    subscribers: [],
+    subscribers: [new MikroEntitySubscriber()],
     autoLoadEntities: true,
     host: postgresConfig.host,
     port: postgresConfig.port,
