@@ -1,0 +1,17 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type OTP {
+  otpLength: Float!
+  expirationTime: String!
+  alphabets: Boolean!
+  upperCase: Boolean!
+  specialChar: Boolean!
+  digits: Boolean!
+  type: String!
+}
+
+type Query {
+  getAllOtpConfigurations: [OTP!]!
+}

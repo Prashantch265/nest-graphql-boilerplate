@@ -1,8 +1,8 @@
 /*
- * @Author: prashant.chaudhary 
- * @Date: 2022-12-08 10:30:09 
- * @Last Modified by:   prashant.chaudhary 
- * @Last Modified time: 2022-12-08 10:30:09 
+ * @Author: prashant.chaudhary
+ * @Date: 2022-12-08 10:30:09
+ * @Last Modified by:   prashant.chaudhary
+ * @Last Modified time: 2022-12-08 10:30:09
  */
 
 import { WinstonModule } from 'nest-winston';
@@ -12,7 +12,7 @@ import { existsSync, mkdirSync } from 'fs';
 import { LoggerService } from '@nestjs/common';
 
 //logs directory
-const logDir = __dirname + '/../../logs';
+const logDir = __dirname + '/../../../logs';
 
 if (!existsSync(logDir)) mkdirSync(logDir, { recursive: true });
 

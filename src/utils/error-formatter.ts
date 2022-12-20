@@ -1,8 +1,8 @@
 /*
- * @Author: prashant.chaudhary 
- * @Date: 2022-12-08 10:39:13 
- * @Last Modified by:   prashant.chaudhary 
- * @Last Modified time: 2022-12-08 10:39:13 
+ * @Author: prashant.chaudhary
+ * @Date: 2022-12-08 10:39:13
+ * @Last Modified by: prashant.chaudhary
+ * @Last Modified time: 2022-12-20 12:30:05
  */
 
 import { ValidationError } from 'class-validator';

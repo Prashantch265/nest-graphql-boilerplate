@@ -1,8 +1,8 @@
 /*
- * @Author: prashant.chaudhary 
- * @Date: 2022-12-08 10:39:55 
- * @Last Modified by:   prashant.chaudhary 
- * @Last Modified time: 2022-12-08 10:39:55 
+ * @Author: prashant.chaudhary
+ * @Date: 2022-12-08 10:39:55
+ * @Last Modified by: prashant.chaudhary
+ * @Last Modified time: 2022-12-20 12:01:54
  */
 
 import * as path from 'path';
@@ -31,11 +31,12 @@ export const readFilesFromFolder = (
   return files;
 };
 
-export function importClassesFromDirectories() {
-  const paths = readFilesFromFolder(
-    path.resolve(__dirname + '/../../dist/core/'),
-    ['module.js', 'module.ts'],
-  );
+export function importClassesFromDirectories(paths?: string[]) {
+  if (paths === undefined || paths?.length === 0)
+    paths = readFilesFromFolder(path.resolve(__dirname + '/../core/'), [
+      'module.js',
+      'module.ts',
+    ]);
 
   const loadFileClasses = function (exported, allLoaded) {
     if (exported instanceof Function) {
