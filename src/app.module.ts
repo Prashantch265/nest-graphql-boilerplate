@@ -2,15 +2,14 @@
  * @Author: prashant.chaudhary
  * @Date: 2022-12-08 11:04:41
  * @Last Modified by: prashant.chaudhary
- * @Last Modified time: 2022-12-20 12:29:03
+ * @Last Modified time: 2023-04-19 17:24:08
  */
 
 import { ConfigurationModule } from '@configs/configuration.module';
-import { pgConnectionForMikroOrm } from '@configs/db-connection.config';
+import { pgConnectionForTypeOrm } from '@configs/db-connection.config';
 import ContextModule from '@context/context.module';
 import { HttpContextMiddleware } from '@context/express-http.context';
 import NodeMailerModule from '@mailer/mailer.module';
-import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { ApolloDriverConfig, ApolloDriver } from '@nestjs/apollo';
 import {
   CacheModule,
@@ -25,13 +24,13 @@ import { importClassesFromDirectories } from '@utils/file-to-class-converter';
 import { loggerService } from '@utils/logger';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      // playground of @nestjs/graphql is not good as apollo server's so we use apollo server's playground
-      playground: false,
+      playground: true,
       debug: process.env.NODE_ENV === 'local' || 'development' ? true : false,
       /**
        * Code first
@@ -43,21 +42,34 @@ import { AppService } from './app.service';
     CacheModule.register({ isGlobal: true, ttl: 0 }),
     ConfigModule.forRoot({ envFilePath: '.env' }),
     ConfigurationModule,
+
+    /**
+     * Mongoose Connection
+     */
     // MongooseModule.forRootAsync({
     //   imports: [ConfigModule],
     //   inject: [ConfigService],
     //   useFactory: async (configService: ConfigService) =>
     //     mongooseConnection(configService),
     // }),
-    // TypeOrmModule.forRoot({
-    //   ...pgConnectionForTypeOrm(),
-    //   retryAttempts: 5,
-    //   autoLoadEntities: true,
-    // }),
-    MikroOrmModule.forRoot({
-      ...pgConnectionForMikroOrm(),
-      logger: loggerService,
+
+    /**
+     * TypeOrm Connection
+     */
+    TypeOrmModule.forRoot({
+      ...pgConnectionForTypeOrm(),
+      retryAttempts: 5,
+      autoLoadEntities: true,
     }),
+
+    /**
+     * MikroOrm Connection
+     */
+    // MikroOrmModule.forRoot({
+    //   ...pgConnectionForMikroOrm(),
+    //   logger: loggerService,
+    // }),
+
     ContextModule,
     NodeMailerModule,
     ...importClassesFromDirectories(),

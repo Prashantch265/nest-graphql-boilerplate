@@ -2,7 +2,14 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type OTP {
+type OtpConfig {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  createdBy: String!
+  updatedBy: String!
+  isActive: Boolean!
+  isPermanent: Boolean!
+  id: Float!
   otpLength: Float!
   expirationTime: String!
   alphabets: Boolean!
@@ -12,6 +19,43 @@ type OTP {
   type: String!
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
-  getAllOtpConfigurations: [OTP!]!
+  getAllOtpConfigurations: [OtpConfig!]!
+  getOtpConfigurationById(id: Float!): OtpConfig!
+}
+
+type Mutation {
+  addOtpConfig(data: AddOtpConfigurationDto!): OtpConfig!
+  updateOtpConfig(id: Float!, data: UpdateOtpConfigurationDto!): OtpConfig!
+  deleteOtpConfig(id: Float!): Int!
+}
+
+input AddOtpConfigurationDto {
+  otpLength: Int!
+  expirationTime: String!
+  digits: Boolean!
+  alphabets: Boolean!
+  upperCase: Boolean!
+  specialChar: Boolean!
+  type: OtpType!
+}
+
+enum OtpType {
+  WEB
+  MOBILE
+}
+
+input UpdateOtpConfigurationDto {
+  otpLength: Float
+  expirationTime: String
+  digits: Boolean
+  alphabets: Boolean
+  upperCase: Boolean
+  specialChar: Boolean
+  type: String
 }

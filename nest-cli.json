@@ -9,6 +9,11 @@
         "include": "configs/**/*.yaml",
         "outDir": "dist/src"
       },
+      {
+        "watchAssets": true,
+        "include": "mailer/template/**",
+        "outDir": "dist/src"
+      },
       { "watchAssets": true, "include": "graphql/*.gql", "outDir": "dist/src" }
     ],
     "watchAssets": true

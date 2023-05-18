@@ -10,10 +10,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import morgan from 'morgan';
 import { loggerService, Stream } from './utils/logger';
-import { expressMiddleware } from '@apollo/server/express4';
-import { ApolloServer } from '@apollo/server';
-import { schema } from '@graphql/graphql.schema';
-import express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -28,13 +24,6 @@ async function bootstrap() {
   if (process.env.NODE_ENV === 'development' || 'local')
     app.use(morgan('dev', { stream: new Stream(loggerService()) }));
   else app.use(morgan('combined', { stream: new Stream(loggerService()) }));
-
-  // bodyparser for apollo server
-  app.use(express.json());
-  const server = new ApolloServer({ schema: schema });
-  // initialize apollo server before expressMiddleware
-  await server.start();
-  app.use('/graphql', expressMiddleware(server));
 
   // listen nest application
   await app.listen(port, () => {

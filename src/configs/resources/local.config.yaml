@@ -1,5 +1,5 @@
 http: 
-  port: 3000
+  port: 5000
   
 database:
   mongodb:
@@ -7,13 +7,13 @@ database:
     port: 27017
     userName: root
     password: toor
-    database: test
+    database: graphql-boilerplate
   postgres:
     host: localhost
     port: 5432
     username: postgres
     password: postgres
-    database: test
+    database: graphql-boilerplate
 
 mailer:
   service: Gmail

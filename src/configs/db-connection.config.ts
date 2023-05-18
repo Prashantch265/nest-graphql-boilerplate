@@ -5,14 +5,16 @@
  * @Last Modified time: 2022-12-20 12:33:10
  */
 
-import MikroEntitySubscriber from '@database/subscribers/mikro-entity.subscriber';
-import { MikroOrmModuleSyncOptions } from '@mikro-orm/nestjs';
-import { MongooseModuleFactoryOptions } from '@nestjs/mongoose';
-import { ConfigService } from '@nestjs/config';
-import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
-import readConfigurations from './read-configs';
-import { TSMigrationGenerator } from '@mikro-orm/migrations';
 import { Utils } from '@mikro-orm/core';
+import { TSMigrationGenerator } from '@mikro-orm/migrations';
+import { MikroOrmModuleSyncOptions } from '@mikro-orm/nestjs';
+import { ConfigService } from '@nestjs/config';
+import { MongooseModuleFactoryOptions } from '@nestjs/mongoose';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import { Logger } from 'mongodb';
+import readConfigurations from './read-configs';
+import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
+import MikroEntitySubscriber from '@database/subscribers/mikro-entity.subscriber';
 
 const NODE_ENV = process.env.NODE_ENV;
 
@@ -20,12 +22,18 @@ const mongooseConnection = (
   configService: ConfigService,
 ): MongooseModuleFactoryOptions => {
   const mongoConfig = configService.get('database.mongodb');
+
+  if (NODE_ENV === 'local' || 'development') Logger.setLevel('debug');
+
   const connectionName = `mongodb://${mongoConfig.userName}:${mongoConfig.password}@${mongoConfig.host}:${mongoConfig.port}`;
 
   return {
     uri: connectionName,
     retryAttempts: 1,
     dbName: mongoConfig.database,
+    logger: Logger.setCurrentLogger((msg, context) => {
+      console.log(msg, context);
+    }),
   };
 };
 
@@ -63,7 +71,7 @@ const pgConnectionForMikroOrm = (): MikroOrmModuleSyncOptions => {
   return {
     type: 'postgresql',
     dbName: postgresConfig.database,
-    // entities: ['./dist/core/**/*.entity.js'],
+    entities: ['./src/core/**/*.entity.js'],
     entitiesTs: ['./src/core/**/*.entity.ts'],
     subscribers: [new MikroEntitySubscriber()],
     autoLoadEntities: true,
@@ -71,6 +79,10 @@ const pgConnectionForMikroOrm = (): MikroOrmModuleSyncOptions => {
     port: postgresConfig.port,
     user: postgresConfig.username,
     password: postgresConfig.password,
+    registerRequestContext: true,
+    debug: process.env.NODE_ENV === 'local' || 'development' ? true : false,
+    highlighter: new SqlHighlighter(),
+    // logger: (msg) => loggerService().log(msg),
     migrations: {
       tableName: 'migrations',
       path: Utils.detectTsNode()
@@ -79,8 +91,18 @@ const pgConnectionForMikroOrm = (): MikroOrmModuleSyncOptions => {
       glob: '!(*.d).{js,ts}',
       transactional: true,
       emit: 'ts',
-      snapshot: true,
+      snapshot: false,
       generator: TSMigrationGenerator,
+    },
+    seeder: {
+      path: Utils.detectTsNode()
+        ? './src/database/seeder/'
+        : './dist/database/seeder/',
+      pathTs: undefined,
+      defaultSeeder: 'DatabaseSeeder',
+      glob: '!(*.d).{js,ts}',
+      emit: 'ts',
+      fileName: (className: string) => className,
     },
   };
 };

@@ -2,38 +2,35 @@
  * @Author: prashant.chaudhary
  * @Date: 2022-12-08 11:43:43
  * @Last Modified by: prashant.chaudhary
- * @Last Modified time: 2022-12-09 15:44:27
+ * @Last Modified time: 2023-04-19 17:25:36
  */
 
-import { Property } from '@mikro-orm/core';
-import { Field } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
+@ObjectType()
 export default class CommonEntity {
   @Field()
-  @Property({ name: 'created_at' })
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date = new Date();
 
   @Field()
-  @Property({ name: 'updated_at', onUpdate: () => new Date() })
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date = new Date();
 
   @Field()
-  @Property({ name: 'created_by', type: 'uuid', nullable: true })
+  @Column({ name: 'created_by', type: 'uuid', nullable: true })
   createdBy: string;
 
   @Field()
-  @Property({ name: 'updated_by', type: 'uuid', nullable: true })
+  @Column({ name: 'updated_by', type: 'uuid', nullable: true })
   updatedBy: string;
 
   @Field()
-  @Property({ name: 'is_deleted', type: 'boolean', default: false })
-  isDeleted: boolean;
-
-  @Field()
-  @Property({ name: 'is_active', type: 'boolean', default: true })
+  @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive: boolean;
 
   @Field()
-  @Property({ name: 'is_permanent', type: 'boolean', default: false })
+  @Column({ name: 'is_permanent', type: 'boolean', default: false })
   isPermanent: boolean;
 }
